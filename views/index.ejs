@@ -1,0 +1,18 @@
+<%- include('header') %>
+
+
+    <h1>Chercher un film</h1>
+    
+
+    <form action="/results" method="get">
+        <input type="text" name="search" placeholder="chercher">
+
+        <label for="type">Type : </label>
+        <select name="type" id="type">
+            <option value="movie">Film</option>
+            <option value="series">Serie</option>
+        </select>
+        <input type="submit">
+    </form>
+
+    <%- include('footer') %>

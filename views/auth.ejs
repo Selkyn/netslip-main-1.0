@@ -1,0 +1,30 @@
+<%- include('header') %>
+
+<h1>S'enregistrer</h1>
+<form action="/register" method="post">
+    <label for="email">Email</label>
+    <input type="email" name="email">
+
+    <label for="password">Mot de passe</label>
+    <input type="password" name="password">
+
+    <input type="submit" value="S'enregistrer">
+</form>
+
+
+<br>
+
+
+<h1>Se connecter</h1>
+<form action="/login" method="post">
+    <label for="email">Email</label>
+    <input type="email" name="email">
+
+    <label for="password">Mot de passe</label>
+    <input type="password" name="password">
+
+    <input type="submit" value="Se connecter">
+</form>
+
+
+<%- include('footer') %>
