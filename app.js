@@ -8,6 +8,8 @@ const axios = require('axios');
 
 
 const usersRoutes = require('./routes/user');
+const movieRoutes = require('./routes/movie');
+const favoriteRoutes = require('./routes/favorite');
 
 app.set('view engine', 'ejs');
 
@@ -40,6 +42,10 @@ app.get('/auth', (req, res, next) => {
     res.render('auth');
 })
 
+app.get('/favorites', (req, res) => {
+    res.render('favorites', { favorites: [] }); 
+});
+
 
 
 
@@ -50,113 +56,17 @@ app.use((req, res, next) => {
     next();
 });
 
-app.get('/results', function(req, res){
-    const query = req.query.search;
-    const type = req.query.type || 'movie';
-    const page = parseInt(req.query.page, 10) || 1; // Par défaut, la première page
-
-    // Ajoutez une vérification pour la longueur minimale de la requête
-    if (query.length >= 1) {
-        const itemsPerPage = 10; // Nombre d'éléments par page
-        const startIndex = (page - 1) * itemsPerPage;
-
-        const url = `https://www.omdbapi.com/?s=${query}*&type=${type}&page=${page}&apikey=563e52c9`;
-        request(url, function(error, response, body){
-            if(!error && response.statusCode == 200){
-                const data = JSON.parse(body);
-                const totalResults = parseInt(data.totalResults, 10);
-                const totalPages = Math.ceil(totalResults / itemsPerPage);
-
-                // Ajoutez la propriété 'Results' pour stocker uniquement les résultats de la page actuelle
-                data.Results = data.Search.slice(startIndex, startIndex + itemsPerPage);
-
-                res.render('results', {
-                    data: data,
-                    currentPage: page,
-                    totalPages: totalPages,
-                    query: query,
-                    type: type // Assurez-vous que la variable query est transmise au modèle
-                });
-            }
-        });
-    } else {
-        // Si la requête est trop courte, vous pouvez rediriger vers une page d'erreur ou renvoyer un message approprié.
-        res.render('error', { message: 'La recherche doit contenir au moins trois lettres.' });
-    }
-});
-
-app.post('/register', async (req, res) => {
-    try {
-        const userData = {
-            email: req.body.email,
-            password: req.body.password,
-        };
-
-        const response = await axios.post('http://localhost:4000/api/auth/signup', userData);
-
-        if (response.status === 201) {
-            console.log('User registered successfully:', response.data.message);
-            res.status(201).send('Utilisateur enregistré');
-        } else {
-            console.error('Error registering user:', response.data.message);
-            res.status(response.status).send('Error registering user');
-        }
-    } catch (error) {
-        console.error('Error registering user:', error.response ? error.response.data : error.message);
-        res.status(500).send('Error registering user');
-    }
-});
-
-// app.use('/register', usersRoutes);
+//ROUTES
+app.use('/user', usersRoutes);
+app.use('/results', movieRoutes)
+app.use('/favorite', favoriteRoutes);
 
 
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-
-    try {
-        // Effectue une requête à l'API-USER pour l'authentification
-        const response = await axios.post('http://localhost:4000/api/auth/login', {
-            email: email,
-            password: password
-        });
-
-        // Récupère le token JWT depuis la réponse
-        // const jwtToken = response.data.token;
-        // const userEmail = response.data.email;
-        const { token, email: userEmail, userId : userId } = response.data;
-
-        // Stocker le token et l'email dans la session
-        req.session.token = token;
-        req.session.email = userEmail;
-        req.session.userId = userId;
-
-        res.json({ token, email: userEmail, userId: userId });
-        // res.json({ token: jwtToken });
-        // res.send(`Bienvenue, ${userEmail} !`);
-    } catch (error) {
-        // Gérer les erreurs, renvoyer un message d'erreur approprié
-        console.error('Erreur de connexion:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Erreur de connexion' });
-    }
-});
-
-// Route pour la déconnexion
-app.get('/logout', function(req, res) {
-    req.logout();
-    if (!req.session) {
-      req.session.destroy(function(err) {
-        res.redirect('/auth');
-      });
-    }
-    else {
-      res.redirect('/auth');
-    }
-  });
-// app.post('/logout', async (req, res) => {
+// app.get('/logout', async (req, res) => {
 //     try {
 //         // Effectuez une requête DELETE vers votre endpoint de déconnexion dans l'API-USER
-//         const response = await axios.delete('http://localhost:4000/api/auth/logout', {
-//             withCredentials: true, // Assurez-vous d'inclure les cookies dans la requête
+//         const response = await axios.get('http://localhost:4000/api/auth/logout', {
+//             // withCredentials: true, // Assurez-vous d'inclure les cookies dans la requête
 //         });
 
 //         if (response.status === 200) {
@@ -181,20 +91,96 @@ app.get('/logout', function(req, res) {
 //     }
 //     next();
 //   });
-  app.post('/add-favorite/:omdbId', async (req, res) => {
-    const userId = req.session.userId;
-    const omdbId = req.params.omdbId;
+
+// app.post('/add-favorite/:omdbId', async (req, res) => {
+//     const omdbId = req.params.omdbId;
+//     // const omdbTitle = req.params.title;
+//     const userId = req.session.userId
+//     const formData = req.body;
+
+//     // const omdbTitle = formData.title;
+
+//     try {
+//         const response = await axios.post(`http://localhost:4000/api/add-favorite/${omdbId}`, {
+//              ...formData,
+//               userId
+//              });
+//         res.status(201).json(response.data);
+//     } catch (error) {
+//         res.status(400).json({ error: error.message });
+//     }
+// });
+
+
+// app.get('/get-favorites', async (req, res) => {
+//     try {
+//         const userId = req.session.userId;
+//         const omdbId = req.body.omdbId;
+//         const response = await axios.get(`http://localhost:4000/api/get-favorites/${userId}`)
+
+//     const favorites = response.data;
+
+// const moviesDetails = [];
+
+// const getMovieDetails = async (omdbId) => {
+//     try {
+//         const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${omdbId}&apikey=563e52c9`);
+//         return movieResponse.data;
+//     } catch (error) {
+//         console.error('Erreur lors de la récupération des détails du film:', error.message);
+//         return null;
+//     }
+// };
+
+// for (const favorite of favorites) {
+//     const movieDetails = await getMovieDetails(favorite.omdbId);
+//     if (movieDetails) {
+//         moviesDetails.push(movieDetails);
+//     }
+// }
+
+//     res.render('favorites', { moviesDetails });
+//     // res.status(201).json(response.data);
+//     } catch (error) {
+//         console.error('Erreur lors de la récupération des favoris:', error.message);
+//         res.status(500).send('Erreur lors de la récupération des favoris');
+//     }
+    
+// })
+
+// app.get('/get-favorites/:userId', async (req, res) => {
+//     try {
+//         // Effectuez une requête à votre API pour récupérer les favoris de l'utilisateur connecté
+//         const response = await axios.get('http://localhost:4000/api/get-favorites/:userId', {
+//             withCredentials: true, // Assurez-vous d'inclure les cookies dans la requête
+//         });
+
+//         // Traitez les favoris récupérés comme vous le souhaitez
+//         const favorites = response.data.favorites;
+//         res.render('favorites', { favorites });
+//     } catch (error) {
+//         // Gérez les erreurs
+//         console.error('Erreur lors de la récupération des favoris:', error.message);
+//         res.status(500).send('Erreur lors de la récupération des favoris');
+//     }
+// });
+
+
+
+//   app.post('/add-favorite/:omdbId', async (req, res) => {
+//     const userId = req.session.userId;
+//     const omdbId = req.params.omdbId;
   
-    try {
-      // Faites une requête à votre API-USER pour ajouter le film aux favoris de l'utilisateur
-      await axios.post(`http://localhost:4000/api/add-favorite/${userId}/${omdbId}`);
+//     try {
+//       // Faites une requête à votre API-USER pour ajouter le film aux favoris de l'utilisateur
+//       await axios.post(`http://localhost:4000/api/add-favorite/${userId}/${omdbId}`);
   
-      res.status(200).send('Film ajouté aux favoris avec succès');
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout aux favoris:', error.message);
-      res.status(500).send('Erreur lors de l\'ajout aux favoris');
-    }
-});
+//       res.status(200).send('Film ajouté aux favoris avec succès');
+//     } catch (error) {
+//       console.error('Erreur lors de l\'ajout aux favoris:', error.message);
+//       res.status(500).send('Erreur lors de l\'ajout aux favoris');
+//     }
+// });
 
 // app.use((req, res) => {
 //     res.json({ message : 'votre requete a bien été recu'})

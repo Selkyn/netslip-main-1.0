@@ -1,0 +1,19 @@
+<%- include('header') %>
+<h1>Mes favoris</h1>
+
+
+
+<ul>
+    <% moviesDetails.forEach((movie) => { %>
+        <li>
+            <h2><%= movie.Title %></h2>
+            <img src="<%= movie.Poster %>" alt="<%= movie.Title %> Poster">
+            <p>Année: <%= movie.Year %></p>
+            <p>Réalisateur: <%= movie.Director %></p>
+            <!-- Ajoutez d'autres informations que vous souhaitez afficher -->
+        </li>
+    <% }); %>
+</ul>
+
+
+<%- include('footer') %>

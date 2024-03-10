@@ -1,18 +1,22 @@
 <%- include('header') %>
+<section class="d-flex justify-content-center  vh-100" >
+    <div class="text-center">
+        <h2 class="mt-4">Chercher un film</h2>
 
+        <div class="input-group">
+            <div class="form-outline" data-mdb-input-init>
+                <form action="/results" method="get">
+                    <input type="text" name="search" placeholder="chercher">
 
-    <h1>Chercher un film</h1>
-    
-
-    <form action="/results" method="get">
-        <input type="text" name="search" placeholder="chercher">
-
-        <label for="type">Type : </label>
-        <select name="type" id="type">
-            <option value="movie">Film</option>
-            <option value="series">Serie</option>
-        </select>
-        <input type="submit">
-    </form>
-
+                    <label for="type">Type : </label>
+                    <select name="type" id="type">
+                        <option value="movie">Film</option>
+                        <option value="series">Serie</option>
+                    </select>
+                    <input class="btn btn-primary" type="submit">
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
     <%- include('footer') %>

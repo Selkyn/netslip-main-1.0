@@ -1,6 +1,5 @@
 <%- include('header') %>
 
-<!-- Votre formulaire de recherche ici -->
 
 <h1>Résultats</h1>
 
@@ -22,7 +21,7 @@
                 <td><img src="<%= item['Poster'] %>" alt=""></td>
                 <td><a href="<%= imdb_url %>">Voir sur IMDB</a></td>
                 <td>
-                    <form action="/add-favorite/<%= item.imdbID %>" method="post">
+                    <form action="/favorite/add-favorite/<%= item.imdbID %>" method="post">
                         <button type="submit">Ajouter aux favoris</button>
                     </form>
                 </td>
