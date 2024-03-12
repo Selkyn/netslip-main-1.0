@@ -15,7 +15,7 @@
         <h1 class="my-4 text-center">Netslip</h1>
     </div>
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary p-4">
         <div class="container-fluid">
             <a class="navbar-brand" aria-current="page" href="/">Accueil</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -42,7 +42,7 @@
 
                             <li class="nav-item mx-4">
                                 <% if (userToken && userEmail) { %>
-                                    <p>Bienvenue, <%= userEmail %>!</p>
+                                    <p>Bienvenue, <%= userEmail %> !</p>
                                     <% } %>
                             </li>
                 </ul>

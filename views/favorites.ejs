@@ -1,19 +1,30 @@
 <%- include('header') %>
-<h1>Mes favoris</h1>
+    <h1 class="text-center mt-4">Mes favoris</h1>
 
 
 
-<ul>
-    <% moviesDetails.forEach((movie) => { %>
-        <li>
-            <h2><%= movie.Title %></h2>
-            <img src="<%= movie.Poster %>" alt="<%= movie.Title %> Poster">
-            <p>Année: <%= movie.Year %></p>
-            <p>Réalisateur: <%= movie.Director %></p>
-            <!-- Ajoutez d'autres informations que vous souhaitez afficher -->
-        </li>
-    <% }); %>
-</ul>
+    <div class="d-inline-flex flex-wrap justify-content-center">
+    <% moviesDetails.forEach((movie)=> { %>
+        
+            <div class="m-4">
+                <h6>
+                    <%= movie.movieDetails.Title %>
+                </h6>
+                <img src="<%= movie.movieDetails.Poster %>" alt="<%= movie.movieDetails.Title %> Poster">
+                <p>Année: <%= movie.movieDetails.Year %>
+                </p>
+                <p>Réalisateur: <%= movie.movieDetails.Director %>
+                </p>
+                <!-- <p>id = <%= movie.favoriteId %></p> -->
+                <form  action="/favorite/delete-favorite/<%= movie.favoriteId %>" method="post">
+                    <button class="btn btn-primary" type="submit">Supprimer favoris</button>
+                </form>
+            </div>
+                <% }); %>
+            
+        </div>
 
 
-<%- include('footer') %>
+
+
+        <%- include('footer') %>

@@ -15,16 +15,16 @@ exports.register = async (req, res, next) => {
         const response = await axios.post('http://localhost:4000/api/auth/signup', userData);
 
         if (response.status === 201) {
-            console.log('User registered successfully:', response.data.message);
+            console.log('Utilisateur enregistré avec succes:', response.data.message);
             res.status(201).redirect('/auth');
             
         } else {
-            console.error('Error registering user:', response.data.message);
-            res.status(response.status).send('Error registering user');
+            console.error('Erreur:', response.data.message);
+            res.status(response.status).send('Erreur d\'enregistrement d\'utilisateur');
         }
     } catch (error) {
-        console.error('Error registering user:', error.response ? error.response.data : error.message);
-        res.status(500).send('Error registering user');
+        console.error('Erreur d\'enregistrement d\'utilisateur:', error.response ? error.response.data : error.message);
+        res.status(500).send('Erreur d\'enregistrement d\'utilisateur');
     }
 }
 

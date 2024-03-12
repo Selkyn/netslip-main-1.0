@@ -1,30 +1,34 @@
 <%- include('header') %>
 
-<h1>S'enregistrer</h1>
-<form action="/user/register" method="post">
-    <label for="email">Email</label>
-    <input type="email" name="email">
 
-    <label for="password">Mot de passe</label>
-    <input type="password" name="password">
+    <section class="d-flex flex-column align-items-center vh-100">
+        <div class="mt-4">
+            <h1>S'enregistrer</h1>
+            <form action="/user/register" method="post">
+                <label for="email">Email</label>
+                <input type="email" name="email">
 
-    <input type="submit" value="S'enregistrer">
-</form>
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password">
 
-
-<br>
-
-
-<h1>Se connecter</h1>
-<form action="/user/login" method="post">
-    <label for="email">Email</label>
-    <input type="email" name="email">
-
-    <label for="password">Mot de passe</label>
-    <input type="password" name="password">
-
-    <input type="submit" value="Se connecter">
-</form>
+                <input type="submit" value="S'enregistrer">
+            </form>
+        </div>
 
 
-<%- include('footer') %>
+
+        <div class="mt-4">
+            <h1>Se connecter</h1>
+            <form action="/user/login" method="post">
+                <label for="email">Email</label>
+                <input type="email" name="email">
+
+                <label for="password">Mot de passe</label>
+                <input type="password" name="password">
+
+                <input type="submit" value="Se connecter">
+            </form>
+        </div>
+    </section>
+
+    <%- include('footer') %>
