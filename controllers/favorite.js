@@ -4,26 +4,21 @@ const axios = require('axios');
 //envoyer les favoris vers l'API
 exports.postFavorite = async (req, res) => {
     const omdbId = req.params.omdbId;
-    // const omdbTitle = req.params.title;
-    const token = req.session.token
-    const userId = req.session.userId
-    const formData = req.body;
-console.log(token);
-    // const omdbTitle = formData.title;
+    const token = req.session.token;
+    const userId = req.session.userId;
 
     try {
         const response = await axios.post(
             `http://localhost:4000/api/favorite/add-favorite/${omdbId}`,
-            { ...formData, userId }, // Inclus userId dans ma requete
+            { userId }, // Inclus userId dans ma requete
             {
                 headers: {
-                    Authorization: `Bearer ${token}` //pour envoyé le token vers l'API afin d'avoir les autorisation
+                    Authorization: `Bearer ${token}` 
+                    //pour envoyé le token vers l'API afin d'avoir les autorisation
                 }
             }
         );
-             console.log(req.session.token)
-             res.redirect(req.get('referer'));
-        // res.status(201).json(response.data);
+        res.redirect(req.get('referer'));
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -34,19 +29,21 @@ console.log(token);
 exports.getFavorite = async (req, res) => {
     try {
         const userId = req.session.userId; //recupere l'id de mon user connecté
-        const omdbId = req.body.omdbId;
         const response = await axios.get(`http://localhost:4000/api/favorite/get-favorites/${userId}`, {
             headers: {
                 Authorization: `Bearer ${req.session.token}`
             }
         });
-        const favorites = response.data; //les informations de la reponse de la requete est stocké dans la variable favorites
-
-        const moviesDetails = []; //mon tableau où seront stocké les films et donc avoir les details
-
-        const getMovieDetails = async (omdbId) => { //à partir de l'id du film (qui est stocké dans ma table favoris), on va pouvoir aller chercher les details en se connectant à l'api OMDB
+        const favorites = response.data;
+        console.log(favorites) 
+        //les informations de la reponse de la requete est stocké dans la variable favorites
+        const detailedMovies = []; 
+        //mon tableau où seront stockés les details des films et l'id du favoris
+        const getMovieDetails = async (omdbId) => { 
+            //à partir de l'id du film (qui est stocké dans const favorites),
+            // on va pouvoir aller chercher les details en se connectant à l'api OMDB
             try {
-                const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${omdbId}&apikey=563e52c9`);
+                const movieResponse = await axios.get(`http://www.omdbapi.com/?i=${omdbId}&plot=full&apikey=563e52c9`);
                 return movieResponse.data;
             } catch (error) {
                 console.error('Erreur lors de la récupération des détails du film:', error.message);
@@ -54,24 +51,22 @@ exports.getFavorite = async (req, res) => {
             }
         };
 
-        //boule sur mon tableau favorites
+        //boucle sur mon tableau favorites
         for (const favorite of favorites) {
-            const movieDetails = await getMovieDetails(favorite.omdbId, favorite._id);
-            if (movieDetails) {
-                moviesDetails.push({
+            const movieInfos = await getMovieDetails(favorite.omdbId);
+            if (movieInfos) {
+                detailedMovies.push({
                     favoriteId: favorite._id,
-                    movieDetails: movieDetails,
+                    movieDetails: movieInfos,
                 });
             }
         }
-
-        res.render('favorites', { moviesDetails }); // on envoie vers la view favorites avec les details du film en parametre
-        // res.status(201).json(response.data);
+        console.table(detailedMovies);
+        res.render('favorites', { detailedMovies }); // on envoie vers la view favorites avec mon tableau en parametre
     } catch (error) {
         console.error('Erreur lors de la récupération des favoris:', error.message);
         res.status(500).send('Erreur lors de la récupération des favoris');
     }
-
 };
 
 

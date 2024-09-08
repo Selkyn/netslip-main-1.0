@@ -1,0 +1,73 @@
+<%- include('header') %>
+
+
+<div class="container mt-4">
+    <h2>Résultats</h2>
+
+    <% if (data && data.length > 0) { %>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Année</th>
+                    <th>Nom</th>
+                    <th>Affiche</th>
+                    <th>Lien vers IMDB</th>
+                    <% if (userToken) { %>
+                    <th>Favoris</th>
+                    <% } %>
+                </tr>
+            </thead>
+            <tbody>
+                <% data.forEach(function(item){ %>
+                    <tr>
+                        <% const imdb_url = 'https://www.imdb.com/title/' + item.imdbID %>
+                        <td><%= item.Year %></td>
+                        <td><%= item.Title %></td>
+                        <td><img src="<%= item.Poster %>" alt="" class="img-fluid" style="max-height: 100px;"></td>
+                        <td><a href="<%= imdb_url %>" class="btn btn-primary" target="_blank">Voir sur IMDB</a></td>
+                        <% if (userToken) { %>
+                        <td>
+                            <form action="/favorite/add-favorite/<%= item.imdbID %>" method="post">
+                                <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
+                            </form>
+                        </td>
+                        <% } %>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="/results?search=<%= query %>&type=<%= type %>&page=<%= currentPage - 1 %>">Page précédente</a>
+                    </li>
+                <% } %>
+                <li class="page-item disabled">
+                    <span class="page-link">Page <%= currentPage %> / <%= totalPages %></span>
+                </li>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="/results?search=<%= query %>&type=<%= type %>&page=<%= currentPage + 1 %>">Page suivante</a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    <% } else { %>
+        <div class="alert alert-info" role="alert">
+            <p>Aucun résultat trouvé.</p>
+        </div>
+    <% } %>
+    
+    
+
+    <div class="mt-4">
+        <a href="/" class="btn btn-secondary">Chercher à nouveau</a>
+    </div>
+</div>
+
+<%- include('footer') %>
+
+     

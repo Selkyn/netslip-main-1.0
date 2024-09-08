@@ -1,45 +1,47 @@
 const axios = require('axios');
 const request = require('request');
 
-exports.searchMovie = (req, res, next) => {
+
+
+exports.searchMovie = async (req, res, next) => {
+    // Extraction des paramètres de requête (query, type, page)
     const query = req.query.search;
     const type = req.query.type || 'movie';
-    const page = parseInt(req.query.page, 10) || 1;
+    const page = parseInt(req.query.page) || 1;
 
-    if (query.length >= 1) {
-        const itemsPerPage = 10;
-        const startIndex = (page - 1) * itemsPerPage;
+    if (query && query.length >= 1) {
+        const url = `https://www.omdbapi.com/?s=${query}&type=${type}&page=${page}&apikey=563e52c9`;
 
-        const url = `https://www.omdbapi.com/?s=${query}*&type=${type}&page=${page}&apikey=563e52c9`;
+        try {
+            // Envoi de la requête à l'API OMDB et attente de la réponse
+            const response = await axios.get(url);
+            const data = response.data;
 
-        request(url, function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-                const data = JSON.parse(body);
+            if (data.Search) {
+                const totalResults = parseInt(data.totalResults);
+                const totalPages = Math.ceil(totalResults / 10); // Nombre total de pages basé sur 10 résultats par page
 
-                if (data && data.Search) {
-                    const totalResults = parseInt(data.totalResults, 10);
-                    const totalPages = Math.ceil(totalResults / itemsPerPage);
-
-                    data.Results = data.Search.slice(startIndex, startIndex + itemsPerPage);
-
-                    res.render('results', {
-                        data: data,
-                        currentPage: page,
-                        totalPages: totalPages,
-                        query: query,
-                        type: type
-                    });
-                } else {
-                    res.render('error', { message: 'Aucun résultat trouvé pour la recherche.' });
-                }
+                // Rendu de la page des résultats avec les données récupérées
+                res.render('resultsPage', {
+                    data: data.Search,
+                    totalResults: totalResults,
+                    currentPage: page,
+                    totalPages: totalPages,
+                    query: query,
+                    type: type
+                });
             } else {
-                res.render('error', { message: 'Erreur lors de la recherche.' });
+                res.render('error', { message: 'Aucun résultat trouvé pour la recherche.' });
             }
-        });
+        } catch (error) {
+            res.render('error', { message: 'Erreur lors de la recherche.' });
+        }
     } else {
         res.render('error', { message: 'La recherche doit contenir au moins une lettre.' });
     }
 };
+
+exports.getMovieDetails
 
 // exports.getRandomMovies = async (req, res, next) => {
 //     try {

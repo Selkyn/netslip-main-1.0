@@ -1,0 +1,10 @@
+.background-section {
+    background-image: url('https://img.freepik.com/photos-gratuite/collage-fond-film_23-2149876003.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1720742400&semt=ais_user');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

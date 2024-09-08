@@ -1,34 +1,59 @@
 <%- include('header') %>
 
 
-    <section class="d-flex flex-column align-items-center vh-100">
-        <div class="mt-4">
-            <h1>S'enregistrer</h1>
-            <form action="/user/register" method="post">
-                <label for="email">Email</label>
-                <input type="email" name="email">
-
-                <label for="password">Mot de passe</label>
-                <input type="password" name="password">
-
-                <input type="submit" value="S'enregistrer">
+<section class="d-flex flex-column align-items-center vh-100"
+style="background-image: url('https://img.freepik.com/photos-gratuite/collage-fond-film_23-2149876003.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1720742400&semt=ais_user'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+>
+    <div class="row w-100 justify-content-center"
+    style="max-width: 800px;">
+        <div class="col-md-5 mb-4">
+            <h2 class="text-center text-white">S'enregistrer</h1>
+            <% if (successMessage) { %>
+                <div class="alert alert-success" role="alert">
+                    <%= successMessage %>
+                </div>
+            <% } %>
+            <form action="/auth/register" method="post" class="border p-4 rounded bg-light shadow-sm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="pseudo">Pseudo</label>
+                    <input type="text" name="pseudo" id="pseudo" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+                <div class="text-center mt-4">
+                    <input type="submit" value="S'enregistrer" class="btn btn-primary">
+                </div>
             </form>
         </div>
 
-
-
-        <div class="mt-4">
-            <h1>Se connecter</h1>
-            <form action="/user/login" method="post">
-                <label for="email">Email</label>
-                <input type="email" name="email">
-
-                <label for="password">Mot de passe</label>
-                <input type="password" name="password">
-
-                <input type="submit" value="Se connecter">
+        <div class="col-md-5 mb-4">
+            <h2 class="text-center text-white">Se connecter</h2>
+            <% if (typeof errorMessage !== 'undefined') { %>
+                <div class="alert alert-danger" role="alert">
+                    <%= errorMessage %>
+                </div>
+            <% } %>
+            <form action="/auth/login" method="post" class="border p-4 rounded bg-light shadow-sm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                </div>
+                <div class="text-center mt-4">
+                    <input type="submit" value="Se connecter" class="btn btn-primary">
+                </div>
             </form>
         </div>
-    </section>
+    </div>
+</section>
 
     <%- include('footer') %>

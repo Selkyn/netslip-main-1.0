@@ -1,5 +1,6 @@
 // const bcrypt = require('bcrypt');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 const axios = require('axios');
 
 
@@ -10,13 +11,14 @@ exports.register = async (req, res, next) => {
         const userData = {
             email: req.body.email,
             password: req.body.password,
+            pseudo: req.body.pseudo
         };
 
         const response = await axios.post('http://localhost:4000/api/auth/signup', userData);
 
         if (response.status === 201) {
-            console.log('Utilisateur enregistré avec succes:', response.data.message);
-            res.status(201).redirect('/auth');
+            req.session.message = response.data.message;
+            res.redirect('/auth');
             
         } else {
             console.error('Erreur:', response.data.message);
@@ -33,32 +35,28 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-
     try {
-        // Effectue une requête à l'API-USER pour l'authentification
+        // Effectue une requête à l'API pour l'authentification
         const response = await axios.post('http://localhost:4000/api/auth/login', {
             email: email,
             password: password
         });
 
-        // Récupère le token JWT depuis la réponse
-        // const jwtToken = response.data.token;
-        // const userEmail = response.data.email;
-        const { token, email: userEmail, userId : userId } = response.data;
+        // les informations depuis la réponse
+        const { token, email: userEmail, userId : userId, roles, pseudo } = response.data;
 
-        // Stocker le token et l'email dans la session
+        // Stocker les informations dans la session
         req.session.token = token;
         req.session.email = userEmail;
         req.session.userId = userId;
+        req.session.roles = roles;
+        req.session.pseudo = pseudo;
 
-        // res.json({ token, email: userEmail, userId: userId });
         res.redirect('/');
-        // res.json({ token: jwtToken });
-        // res.send(`Bienvenue, ${userEmail} !`);
     } catch (error) {
         // Gérer les erreurs, renvoyer un message d'erreur 
-        console.error('Erreur de connexion:', error.response ? error.response.data : error.message);
-        res.status(500).json({ error: 'Erreur de connexion' });
+        const errorMessage = error.response ? error.response.data.message : 'Erreur de connexion';
+        res.render('auth', { errorMessage });
     }
 };
 
@@ -73,3 +71,10 @@ exports.logout = (req, res) => {
       res.redirect('/auth');
     }
   };
+
+  exports.showAuthPage = (req, res) => {
+    const message = req.session.message;
+    const error = req.session.error;
+
+    res.render('auth', { successMessage: message, errorMessage: error });
+};

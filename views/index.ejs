@@ -1,22 +1,17 @@
 <%- include('header') %>
-<section class="d-flex justify-content-center  vh-100" >
-    <div class="text-center">
-        <h2 class="mt-4">Chercher un film</h2>
-
-        <div class="input-group">
-            <div class="form-outline" data-mdb-input-init>
-                <form action="/results" method="get">
-                    <input type="text" name="search" placeholder="chercher">
-
-                    <label for="type">Type : </label>
-                    <select name="type" id="type">
-                        <option value="movie">Film</option>
-                        <option value="series">Serie</option>
-                    </select>
-                    <input class="btn btn-primary" type="submit">
-                </form>
-            </div>
-        </div>
+<section class="d-flex justify-content-center vh-100"
+    style="background-image: url('https://img.freepik.com/photos-gratuite/collage-fond-film_23-2149876003.jpg?size=626&ext=jpg&ga=GA1.1.2008272138.1720742400&semt=ais_user'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+    <div class="text-center bg-white p-4 rounded shadow mt-4" style="max-height: 150px;  max-width: 500px; width: 100%; border-radius: 15px;">
+        <h2 class="mb-4">Chercher un film</h2>
+        <form action="/results" method="get" class="d-flex justify-content-center align-items-center">
+            <input type="text" class="form-control rounded-pill me-2" name="search" placeholder="Chercher" style="max-width: 200px;">
+            <label for="type" class="me-2">Type :</label>
+            <select name="type" id="type" class="form-select rounded-pill me-2" style="max-width: 100px;">
+                <option value="movie">Film</option>
+                <option value="series">Série</option>
+            </select>
+            <button type="submit" class="btn btn-primary rounded-pill">Envoyer</button>
+        </form>
     </div>
 </section>
 <%- include('footer') %>
